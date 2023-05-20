@@ -7,7 +7,6 @@ if (!process.env.HUMANLOOP_API_KEY) {
 }
 
 const humanloop = new Humanloop({
-  basePath: "https://api.humanloop.com/v4",
   apiKey: process.env.HUMANLOOP_API_KEY,
 });
 
