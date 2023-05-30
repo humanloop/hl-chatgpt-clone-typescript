@@ -1,5 +1,5 @@
 {
-  "name": "hl-tutorial-ts2",
+  "name": "hl-chatgpt-clone-typescript",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
-    "humanloop": "^0.4.0",
+    "humanloop": "^0.4.0-a5",
     "next": "13.4.2",
     "postcss": "8.4.23",
     "react": "18.2.0",

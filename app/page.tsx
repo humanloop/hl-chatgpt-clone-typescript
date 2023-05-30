@@ -43,13 +43,23 @@ export default function Home() {
       const value = chunk.value;
       done = chunk.done;
       const val = decoder.decode(value);
+      const json_chunks = val
+        .split("}{")
+        .map(
+          (s) =>
+            (s.startsWith("{") ? "" : "{") + s + (s.endsWith("}") ? "" : "}")
+        );
+      const tokens = json_chunks.map((s) => JSON.parse(s).output).join("");
 
       setMessages((messages) => {
         const updatedLastMessage = messages.slice(-1)[0];
 
         return [
           ...messages.slice(0, -1),
-          { ...updatedLastMessage, content: updatedLastMessage.content + val },
+          {
+            ...updatedLastMessage,
+            content: updatedLastMessage.content + tokens,
+          },
         ];
       });
     }
@@ -72,7 +82,7 @@ export default function Home() {
         ))}
 
         <div className="flex w-full">
-          <div className="min-w-[70px] uppercase text-xs text-gray-500 dark:text-gray-300 pt-2">
+          <div className="min-w-[80px] uppercase text-xs text-gray-500 dark:text-gray-300 pt-2">
             User
           </div>
           <input
