@@ -5,8 +5,13 @@ import * as React from "react";
 
 const { useState } = React;
 
+interface ChatListItem {
+  id: string | null; // null for user messages, string for assistant messages
+  message: ChatMessage;
+}
+
 export default function Home() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatListItems, setChatListItems] = useState<ChatListItem[]>([]);
   const [inputValue, setInputValue] = useState("");
 
   const onSend = async () => {
@@ -17,20 +22,20 @@ export default function Home() {
 
     setInputValue("");
 
-    const newMessages: ChatMessage[] = [
-      ...messages,
-      userMessage,
-      { role: "assistant", content: "" },
+    const newItems: ChatListItem[] = [
+      ...chatListItems,
+      { message: userMessage, id: null },
+      { message: { role: "assistant", content: "" }, id: null },
     ];
 
-    setMessages(newMessages);
+    setChatListItems(newItems);
 
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newMessages),
+      body: JSON.stringify(newItems.slice(0, -1).map((item) => item.message)), // slice off the final message, which is the currently empty placeholder for the assistant response
     });
 
     if (!response.body) throw Error();
@@ -50,15 +55,20 @@ export default function Home() {
             (s.startsWith("{") ? "" : "{") + s + (s.endsWith("}") ? "" : "}")
         );
       const tokens = json_chunks.map((s) => JSON.parse(s).output).join("");
+      const id = JSON.parse(json_chunks[0]).id;
 
-      setMessages((messages) => {
-        const updatedLastMessage = messages.slice(-1)[0];
+      setChatListItems((chatListItems) => {
+        const lastItem = chatListItems.slice(-1)[0];
 
         return [
-          ...messages.slice(0, -1),
+          ...chatListItems.slice(0, -1),
           {
-            ...updatedLastMessage,
-            content: updatedLastMessage.content + tokens,
+            ...lastItem,
+            message: {
+              ...lastItem.message,
+              content: lastItem.message.content + tokens,
+            },
+            id,
           },
         ];
       });
@@ -77,8 +87,8 @@ export default function Home() {
         Chess Tutor
       </h1>
       <div className="flex-col w-full mt-8">
-        {messages.map((msg, idx) => (
-          <MessageRow key={idx} msg={msg}></MessageRow>
+        {chatListItems.map((item, idx) => (
+          <ChatItemRow key={idx} item={item}></ChatItemRow>
         ))}
 
         <div className="flex w-full">
@@ -106,17 +116,46 @@ export default function Home() {
   );
 }
 
-interface MessageRowProps {
-  msg: ChatMessage;
+interface ChatItemRowProps {
+  item: ChatListItem;
 }
 
-const MessageRow: React.FC<MessageRowProps> = ({ msg }) => {
+const ChatItemRow: React.FC<ChatItemRowProps> = ({ item }) => {
+  const onFeedback = async (feedback: string) => {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: item.id, value: feedback }),
+    });
+  };
+
   return (
     <div className="flex pb-4 mb-4 border-b border-gray-300">
       <div className="min-w-[80px] uppercase text-xs text-gray-500 dark:text-gray-300 leading-tight pt-1">
-        {msg.role}
+        {item.message.role}
       </div>
-      <div className="pl-4 whitespace-pre-line">{msg.content}</div>
+      <div className="pl-4 whitespace-pre-line">{item.message.content}</div>
+      <div className="grow" />
+      <div className="text-xs">
+        {item.id !== null && (
+          <div className="flex gap-2">
+            <button
+              className="p-1 bg-gray-100 border-gray-600 rounded hover:bg-gray-200 border-1"
+              onClick={() => onFeedback("good")}
+            >
+              👍
+            </button>
+            <button
+              className="p-1 bg-gray-100 border-gray-600 rounded hover:bg-gray-200 border-1"
+              onClick={() => onFeedback("bad")}
+            >
+              👎
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
