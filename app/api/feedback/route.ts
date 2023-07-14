@@ -10,13 +10,19 @@ const humanloop = new Humanloop({
   apiKey: process.env.HUMANLOOP_API_KEY,
 });
 
-export async function POST(req: Request): Promise<Response> {
-  const messages: ChatMessage[] = (await req.json()) as ChatMessage[];
+interface FeedbackRequest {
+  id: string;
+  value: string;
+}
 
-  const response = await humanloop.chatDeployedStream({
-    project: "chat-tutorial-ts",
-    messages,
+export async function POST(req: Request): Promise<Response> {
+  const feedbackRequest: FeedbackRequest = await req.json();
+
+  await humanloop.feedback({
+    type: "rating",
+    data_id: feedbackRequest.id,
+    value: feedbackRequest.value,
   });
 
-  return new Response(response.data);
+  return new Response();
 }
