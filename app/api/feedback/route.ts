@@ -1,7 +1,7 @@
 import { Humanloop, ChatMessage } from "humanloop";
 
 if (!process.env.HUMANLOOP_API_KEY) {
-  throw Error(
+  throw new Error(
     "no Humanloop API key provided; add one to your .env.local file with: `HUMANLOOP_API_KEY=..."
   );
 }
