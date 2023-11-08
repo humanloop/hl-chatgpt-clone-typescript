@@ -59,7 +59,7 @@ export default function Home() {
 
       setChatListItems((chatListItems) => {
         const lastItem = chatListItems.slice(-1)[0];
-
+        const updatedId = id || lastItem.id; // <- use the id from the streaming response if it's not already set
         return [
           ...chatListItems.slice(0, -1),
           {
@@ -68,7 +68,7 @@ export default function Home() {
               ...lastItem.message,
               content: lastItem.message.content + tokens,
             },
-            id,
+            id: updatedId, // <- include the id when we update state
           },
         ];
       });
