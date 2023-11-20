@@ -1,4 +1,4 @@
-This is the complete source code repository for the Humanloop [ChatGPT-clone tutorial](https://docs.humanloop.com/v4.0/docs/chatgpt-clone-nextjs).
+This is the complete source code repository for the Humanloop [ChatGPT-clone tutorial](https://docs.humanloop.com/v4.0/docs/chatgpt-clone-in-nextjs).
 
 ## Getting Started
 
