@@ -1,4 +1,4 @@
-import { Humanloop, ChatMessage } from "humanloop";
+import { Humanloop } from "humanloop";
 
 if (!process.env.HUMANLOOP_API_KEY) {
   throw new Error(

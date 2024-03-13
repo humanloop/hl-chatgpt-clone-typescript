@@ -1,13 +1,11 @@
 "use client";
 
-import { ChatMessage } from "humanloop";
-import * as React from "react";
-
-const { useState } = React;
+import { ChatMessageWithToolCall } from "humanloop";
+import { useState } from "react";
 
 interface ChatListItem {
   id: string | null; // null for user messages, string for assistant messages
-  message: ChatMessage;
+  message: ChatMessageWithToolCall;
 }
 
 export default function Home() {
@@ -15,7 +13,7 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
 
   const onSend = async () => {
-    const userMessage: ChatMessage = {
+    const userMessage: ChatMessageWithToolCall = {
       role: "user",
       content: inputValue,
     };
@@ -66,7 +64,7 @@ export default function Home() {
             ...lastItem,
             message: {
               ...lastItem.message,
-              content: lastItem.message.content + tokens,
+              content: (lastItem.message.content as string) + tokens,
             },
             id: updatedId, // <- include the id when we update state
           },
@@ -83,7 +81,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center min-h-screen p-8 md:p-24">
-      <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+      <h1 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-200 sm:truncate sm:text-3xl sm:tracking-tight">
         Chess Tutor
       </h1>
       <div className="flex-col w-full mt-8">
@@ -136,7 +134,9 @@ const ChatItemRow: React.FC<ChatItemRowProps> = ({ item }) => {
       <div className="min-w-[80px] uppercase text-xs text-gray-500 dark:text-gray-300 leading-tight pt-1">
         {item.message.role}
       </div>
-      <div className="pl-4 whitespace-pre-line">{item.message.content}</div>
+      <div className="pl-4 whitespace-pre-line">
+        {item.message.content as string}
+      </div>
       <div className="grow" />
       <div className="text-xs">
         {item.id !== null && (

@@ -1,4 +1,4 @@
-import { Humanloop, ChatMessage } from "humanloop";
+import { Humanloop, ChatMessageWithToolCall } from "humanloop";
 
 if (!process.env.HUMANLOOP_API_KEY) {
   throw new Error(
@@ -11,7 +11,8 @@ const humanloop = new Humanloop({
 });
 
 export async function POST(req: Request): Promise<Response> {
-  const messages: ChatMessage[] = (await req.json()) as ChatMessage[];
+  const messages: ChatMessageWithToolCall[] =
+    (await req.json()) as ChatMessageWithToolCall[];
 
   const response = await humanloop.chatDeployedStream({
     project: "chat-tutorial-ts",
