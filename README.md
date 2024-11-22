@@ -8,6 +8,8 @@ Add a `.env.local` file at the root of the project and include your Humanloop AP
 
 ```
 HUMANLOOP_API_KEY=...
+# Optionally setup OpenAI API key, if you haven't already
+OPENAI_API_KEY=
 ```
 
 Run the development server:

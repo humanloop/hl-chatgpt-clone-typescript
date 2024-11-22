@@ -16,7 +16,16 @@ export async function POST(req: Request): Promise<Response> {
   const messages = await req.json();
 
   const response = await humanloop.prompts.callStream({
-    path: "customer-support-agent",
+    path: "chatgpt-clone-tutorial/customer-support-agent",
+    prompt: {
+      model: "gpt-4",
+      template: [
+        {
+          role: "system",
+          content: "You are a helpful assistant.",
+        },
+      ],
+    },
     messages,
     // This is the name of your company. You can change it to any string you like.
     // It matches the companyName input defined in the Prompt Version template.

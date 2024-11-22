@@ -33,31 +33,39 @@ export default function Home() {
       body: JSON.stringify(newMessages),
     });
 
+    if (!response.body) return;
+    
+    const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    const reader = response?.body?.getReader();
-    let done = false;
-    while (!done && reader) {
-      const chunk = await reader.read();
-      const value = chunk.value;
-      done = chunk.done;
-      const val = decoder.decode(value);
-      const jsonChunks = val
-        .split("}{")
-        .map(
-          (s) =>
-            (s.startsWith("{") ? "" : "{") + s + (s.endsWith("}") ? "" : "}")
-        );
-      const tokens = jsonChunks.map((s) => JSON.parse(s).output).join("");
-      setMessages((messages) => {
-        const updatedLastMessage = messages.slice(-1)[0];
-        return [
-          ...messages.slice(0, -1),
-          {
-            ...updatedLastMessage,
-            content: (updatedLastMessage.content as string) + tokens,
-          },
-        ];
-      });
+    
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        const text = decoder.decode(value);
+        const lines = text.split('\n').filter(line => line.trim());
+        
+        for (const line of lines) {
+          try {
+            const parsed = JSON.parse(line);
+            setMessages((messages) => {
+              const updatedLastMessage = messages.slice(-1)[0];
+              return [
+                ...messages.slice(0, -1),
+                {
+                  ...updatedLastMessage,
+                  content: (updatedLastMessage.content as string) + parsed.output,
+                },
+              ];
+            });
+          } catch (e) {
+            console.error('Failed to parse chunk:', line);
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
     }
   };
 
