@@ -1,4 +1,4 @@
-This is the complete source code repository for the Humanloop [ChatGPT-clone tutorial](https://docs.humanloop.com/docs/tutorials/chatgpt-clone).
+This is the complete source code repository for the Humanloop [Add user feedback tutorial](https://docs.humanloop.com/docs/tutorials/capture-user-feedback.mdx).
 
 ## Getting Started
 
