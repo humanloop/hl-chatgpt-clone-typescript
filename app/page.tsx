@@ -1,12 +1,10 @@
 "use client";
 
 import { ChatMessage, ChatRole } from "humanloop/api";
-import { Result } from "postcss";
-import * as React from "react";
-
-const { useState } = React;
+import React, { useState } from "react";
 
 interface Message {
+  // we capture logId only for the assistant messages
   logId?: string;
   message: ChatMessage;
 }
@@ -51,8 +49,8 @@ export default function Home() {
         if (done) break;
 
         const text = decoder.decode(value);
-        const chunks = text.split('\n').filter(chunk => chunk.trim());
-        
+        const chunks = text.split("\n").filter((chunk) => chunk.trim());
+
         for (const chunk of chunks) {
           try {
             const parsed = JSON.parse(chunk);
