@@ -1,22 +1,23 @@
-import { HumanloopClient } from "humanloop";
 import { readableStreamAsyncIterable } from "humanloop/core/streaming-fetcher/Stream";
+import { humanloop } from "../humanloop_client";
 
-if (!process.env.HUMANLOOP_API_KEY) {
-  throw Error(
-    "no Humanloop API key provided; add one to your .env.local file with: `HUMANLOOP_API_KEY=..."
-  );
-}
-
-const humanloop = new HumanloopClient({
-  environment: "https://api.humanloop.com/v5",
-  apiKey: process.env.HUMANLOOP_API_KEY,
-});
+export const PROMPT_HUMANLOOP_PATH =
+  "chatgpt-clone-tutorial/customer-support-agent";
 
 export async function POST(req: Request): Promise<Response> {
   const messages = await req.json();
 
   const response = await humanloop.prompts.callStream({
-    path: "customer-support-agent",
+    path: PROMPT_HUMANLOOP_PATH,
+    prompt: {
+      model: "gpt-4",
+      template: [
+        {
+          role: "system",
+          content: "You are a helpful assistant.",
+        },
+      ],
+    },
     messages,
     // This is the name of your company. You can change it to any string you like.
     // It matches the companyName input defined in the Prompt Version template.
@@ -35,9 +36,8 @@ export async function POST(req: Request): Promise<Response> {
     async start(controller) {
       try {
         for await (const chunk of stream) {
-          // Serialize the chunk to a string
-          const serializedChunk = JSON.stringify(chunk);
-          // Enqueue the serialized chunk as a Uint8Array
+          // Add a newline delimiter between chunks
+          const serializedChunk = JSON.stringify(chunk) + "\n";
           controller.enqueue(new TextEncoder().encode(serializedChunk));
         }
         controller.close();
