@@ -8,6 +8,14 @@ export async function POST(req: Request): Promise<Response> {
     parentId: body.logId,
     path: PATH_TO_EVALUATOR,
     judgment: body.judgment,
+    spec : {
+      argumentsType: "target_free",
+      returnType: "select",
+      evaluatorType: "human",
+      options: [{"name": "bad", "valence": "negative"}, {"name": "good", "valence": "positive"}]
+
+    }
+
   });
   return new Response();
 }
