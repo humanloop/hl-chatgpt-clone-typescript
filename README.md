@@ -1,4 +1,4 @@
-This is the complete source code repository for the Humanloop [Add user feedback tutorial](https://docs.humanloop.com/docs/tutorials/capture-user-feedback.mdx).
+This is the complete source code repository for the Humanloop [Add user feedback tutorial](https://docs.humanloop.com/docs/tutorials/capture-user-feedback).
 
 ## Getting Started
 
