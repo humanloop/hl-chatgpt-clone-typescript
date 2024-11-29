@@ -1,4 +1,4 @@
-This is the complete source code repository for the Humanloop [ChatGPT-clone tutorial](https://docs.humanloop.com/docs/tutorials/chatgpt-clone).
+This is the complete source code repository for the Humanloop [Add user feedback tutorial](https://docs.humanloop.com/docs/tutorials/capture-user-feedback).
 
 ## Getting Started
 
@@ -8,6 +8,8 @@ Add a `.env.local` file at the root of the project and include your Humanloop AP
 
 ```
 HUMANLOOP_API_KEY=...
+# Optionally setup OpenAI API key, if you haven't already
+OPENAI_API_KEY=
 ```
 
 Run the development server:
